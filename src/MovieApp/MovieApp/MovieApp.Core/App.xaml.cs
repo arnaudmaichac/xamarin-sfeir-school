@@ -6,12 +6,12 @@ namespace MovieApp.Core
 {
     public partial class App : Application
     {
-        public App()
-        {
-            InitializeComponent();
+    public App()
+    {
+        InitializeComponent();
 
-            MainPage = new MainPage();
-        }
+        MainPage = new NavigationPage(new MainPage());
+    }
 
         protected override void OnStart()
         {
