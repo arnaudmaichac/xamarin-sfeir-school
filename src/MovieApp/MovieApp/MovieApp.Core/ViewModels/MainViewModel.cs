@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using MovieApp.Core.Models;
+using MovieApp.Core.Services;
+using MvvmHelpers;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
-using MovieApp.Core.Models;
-using MovieApp.Core.Store;
 using Xamarin.Forms;
 
 namespace MovieApp.Core.ViewModels
 {
     public class MainViewModel : INotifyPropertyChanged
     {
-        public IList<Movie> Movies { get; }
+        public ObservableRangeCollection<Movie> Movies { get; } = new ObservableRangeCollection<Movie>();
 
         private Movie selectedMovie;
         public Movie SelectedMovie
@@ -34,11 +32,17 @@ namespace MovieApp.Core.ViewModels
         }
 
         private readonly INavigation navigation;
+        private readonly MovieService movieService;
 
         public MainViewModel(INavigation navigation)
         {
             this.navigation = navigation;
-            Movies = new MovieRepository().Movies;
+            this.movieService = new MovieService();
+        }
+
+        public async void GetData()
+        {
+            Movies.AddRange(await movieService.GetMoviesByName());
         }
 
         private async void NavigateToDetailPage()
