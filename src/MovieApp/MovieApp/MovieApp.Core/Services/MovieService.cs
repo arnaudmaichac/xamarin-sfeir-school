@@ -15,8 +15,16 @@ namespace MovieApp.Core.Services
         {
             string url = string.Format(Constants.ApiUrl, "search/movie", $"?api_key={Constants.ApiKey}&query={search}&language=fr-FR&page=1&include_adult=false");
 
-            // return jsonResult["results"].ToObject<List<Movie>>();
-            return null;
+            using (HttpClient client = new HttpClient())
+            {
+                var httpResponse = await client.GetAsync(url);
+                httpResponse.EnsureSuccessStatusCode();
+
+                var stringResult = await httpResponse.Content.ReadAsStringAsync();
+
+                var jsonResult = JObject.Parse(stringResult);         
+                return jsonResult["results"].ToObject<List<Movie>>();
+            }
         }
     }
 }
